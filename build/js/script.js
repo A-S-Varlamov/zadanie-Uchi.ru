@@ -35,6 +35,7 @@ function startGame() {
 }
  
 function step1() {
+    GLOBAL.step = 1;
     // скрываем вторую стрелку, второй и третий input
     GLOBAL.arrow2.firstChild.style.visibility = 'hidden';
     GLOBAL.arrow2.lastChild.style.visibility = 'hidden';
@@ -57,13 +58,17 @@ function step1() {
     GLOBAL.input3.value = '';
     GLOBAL.button.style.visibility = 'hidden';
 
+    // анимация появления первой стрелки
     GLOBAL.arrow1.lastChild.style.visibility = 'hidden';
     GLOBAL.arrow1.firstChild.classList.toggle("active");
 
+    // появляется тело стрелки
     setTimeout( function () {
         GLOBAL.arrow1.firstChild.classList.toggle("active");
         GLOBAL.arrow1.lastChild.style.visibility = 'visible';
         GLOBAL.arrow1.lastChild.classList.toggle("active");
+
+        // появляется кончик стрелки
         setTimeout( function () {
             GLOBAL.arrow1.lastChild.classList.toggle("active");
         }, 600 );
@@ -71,20 +76,14 @@ function step1() {
     
     // событие на ввод числа в первый input
     GLOBAL.input1.addEventListener( 'input', function (e) {
-        var str = '';
-        if( e.data ) this.value = e.data;
-        log(e)
 
-        if( this.value ) {
-            str = this.value;
-            str = str.slice(0,1);
-            log(typeof str);
+        // запрет на нежелательные символы
+        if (this.value.length > 1 || e.data == 'e' || e.data == '-'  || e.data == '+') {
+            this.value = e.data;
         }
-        
-
         // если ввели правильное число переходим к шагу 2
         if( this.value == GLOBAL.number[0] ) {
-            step2();
+            if (GLOBAL.step == 1) step2();
 
         } else {  // если значение не верно красим числа в цвета
             GLOBAL.input1.style.color = 'red';
@@ -95,21 +94,25 @@ function step1() {
 }
 // шаг 2. ввод числа во второй input. 
 function step2() {
-  
+    GLOBAL.step = 2;
     // появляются вторая стрелка и второй input, на инпут фокус
     var arrow2 = GLOBAL.arrow2;
 
-    
+    // анимация появления первой стрелки
     arrow2.firstChild.classList.toggle("active");
     arrow2.firstChild.style.visibility = 'visible';
 
+    // появляется тело стрелки
     setTimeout( function () {
         arrow2.firstChild.classList.toggle("active");
         arrow2.lastChild.style.visibility = 'visible';
         arrow2.lastChild.classList.toggle("active");
+
+        // появляется кончик стрелки
         setTimeout( function () {
             arrow2.lastChild.classList.toggle("active");
         }, 600 );
+
     }, 600 );
 
     GLOBAL.input2.style.visibility = 'visible';
@@ -123,11 +126,14 @@ function step2() {
    
     // событие на ввод числа во второй input
     GLOBAL.input2.addEventListener( 'input', function (e) {
-        this.value = e.data;
-
+        
+        // запрет на нежелательные символы
+        if (this.value.length > 1 || e.data == 'e' || e.data == '-'  || e.data == '+') {
+            this.value = e.data;
+        }
         // если ввели правильное число переходим к шагу 3
         if( this.value == GLOBAL.number[1] ) {
-            step3(); 
+            if (GLOBAL.step == 2) step3(); 
 
         } else { // если значение не верно красим цифры в цвета
             GLOBAL.input2.style.color = 'red';
@@ -137,7 +143,7 @@ function step2() {
 }
 // шаг 3. ввод числа в третий input
 function step3() {
-    
+    GLOBAL.step = 3;
     // появляется третий input, переводим фокус на него
     GLOBAL.input3.style.visibility = 'visible';
     GLOBAL.input3.focus();
@@ -157,7 +163,6 @@ function step3() {
         // если ввели больше двух цифр очищаем инпут
         if (this.value.length > 2) {
             this.value = e.data;
-            log(e.data)
         }
 
         // если введена одна цифра цвет текста черный
@@ -165,12 +170,14 @@ function step3() {
 
         // если ввели правильное число - задача решена
         if( this.value == GLOBAL.number[0] + GLOBAL.number[1] ) {
-            GLOBAL.input3.style.color = 'black';
-            GLOBAL.input3.style.border = '0';
-            GLOBAL.input3.disabled = true;
-            GLOBAL.input3.style.color = 'black';
-            GLOBAL.button.style.visibility = 'visible';
-    
+            if( GLOBAL.step == 3 ) {
+                GLOBAL.input3.style.color = 'black';
+                GLOBAL.input3.style.border = '0';
+                GLOBAL.input3.disabled = true;
+                GLOBAL.input3.style.color = 'black';
+                GLOBAL.button.style.visibility = 'visible';
+            }
+            
         } else { // если ответ не правильный красим текст в красный цвет
             if (this.value.length > 1 ) GLOBAL.input3.style.color = 'red';
         }

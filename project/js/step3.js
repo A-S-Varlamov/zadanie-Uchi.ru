@@ -1,6 +1,6 @@
 // шаг 3. ввод числа в третий input
 function step3() {
-    
+    GLOBAL.step = 3;
     // появляется третий input, переводим фокус на него
     GLOBAL.input3.style.visibility = 'visible';
     GLOBAL.input3.focus();
@@ -20,7 +20,6 @@ function step3() {
         // если ввели больше двух цифр очищаем инпут
         if (this.value.length > 2) {
             this.value = e.data;
-            log(e.data)
         }
 
         // если введена одна цифра цвет текста черный
@@ -28,12 +27,14 @@ function step3() {
 
         // если ввели правильное число - задача решена
         if( this.value == GLOBAL.number[0] + GLOBAL.number[1] ) {
-            GLOBAL.input3.style.color = 'black';
-            GLOBAL.input3.style.border = '0';
-            GLOBAL.input3.disabled = true;
-            GLOBAL.input3.style.color = 'black';
-            GLOBAL.button.style.visibility = 'visible';
-    
+            if( GLOBAL.step == 3 ) {
+                GLOBAL.input3.style.color = 'black';
+                GLOBAL.input3.style.border = '0';
+                GLOBAL.input3.disabled = true;
+                GLOBAL.input3.style.color = 'black';
+                GLOBAL.button.style.visibility = 'visible';
+            }
+            
         } else { // если ответ не правильный красим текст в красный цвет
             if (this.value.length > 1 ) GLOBAL.input3.style.color = 'red';
         }
