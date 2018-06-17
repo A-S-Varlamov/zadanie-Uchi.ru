@@ -1,0 +1,81 @@
+@mixin arrow
+  fill: none
+  stroke: #C7488A
+  stroke-width: 15
+  bottom: 0px
+  position: absolute
+  margin-bottom: 6.9%
+
+@mixin input
+  -moz-appearance: textfield
+  text-align: center
+  border-radius: 5px
+  position: absolute
+  bottom: 0
+  margin-bottom: 20%
+  font-size: 1.2em
+  width: 20px
+  background-color: #fff
+    
+body
+  margin: 0
+  padding: 0
+
+#image
+  width: 672px
+  height: 100px
+  display: block
+  margin: 17% auto 0 auto
+  background-image: url('https://s19.postimg.cc/hux4m6l1v/sprite.png')
+  background-repeat: no-repeat
+  background-size: contain
+  position: relative
+
+.contExample
+  text-align: center
+  margin: 50px 0
+  padding: 0px
+  
+.contExample a
+  font-size: 2.5em
+  font-family: 'Trebuchet MS', 'Arial'
+  
+#exampleNum1, #exampleNum2
+  padding: 0 6px
+  border-radius: 6px
+
+#arrow1
+  @include arrow
+  bottom: 7px // 38
+  
+#arrow2
+  @include arrow
+  bottom: 7px // 38
+
+#input1
+  @include input
+  
+#input2
+  @include input
+
+#input3
+  position: relative
+  right: 25px
+  width: 100px
+  bottom: 0
+  text-align: center
+  border-radius: 5px
+  font-size: 2.5em
+  background-color: #fff
+  
+#but
+  width: 30%
+  min-width: 120px
+  margin: 20px 35%
+  
+  
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button 
+    -webkit-appearance: none
+
+
