@@ -21,26 +21,32 @@ function startGame() {
   // вывести второе число a+b - [11,14]
   GLOBAL.exampleNum2.innerHTML = GLOBAL.number[1]; 
 
+  setStroke();                    // отрегулировать толщину стрелок 
+
+  winResizeArrow();               // положение стрелок взависимости от размера окна браузера
   calculateArrow();               // просчитать размеры и положение стрелок
-  setStroke();                    // отрегулировать толщину стрелок
-  winResize();
-  calculateInput1Position();      // просчитать позицию первого input
-  calculateInput2Position();      // просчитать позицию второго input
-  
+
+  calculateInputPosition();       // просчитать положение инпутов
+  winResizeInputPosition();       // положение инпутов взависимости от размера окна браузера
+
 
   // шаг 1. ввод числа в первый input
   step1();
-
 }
  
 //= step1.js
 //= step2.js
 //= step3.js
-//= calculateInput1Position.js
-//= calculateInput2Position.js
-//= getNumber.js
-//= calculateArrow.js
+
 //= setStroke.js
+//= getNumber.js
+
+//= calculateInputPosition.js
+//= winResizeInputPosition.js
+
+//= calculateArrow.js
+//= winResizeArrow.js
+
 
 // взять элемент по id
 function getElemId( str ){

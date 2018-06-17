@@ -21,25 +21,28 @@ function startGame() {
   // вывести второе число a+b - [11,14]
   GLOBAL.exampleNum2.innerHTML = GLOBAL.number[1]; 
 
+  setStroke();                    // отрегулировать толщину стрелок 
+
+  winResizeArrow();               // положение стрелок взависимости от размера окна браузера
   calculateArrow();               // просчитать размеры и положение стрелок
-  setStroke();                    // отрегулировать толщину стрелок
-  winResize();
-  calculateInput1Position();      // просчитать позицию первого input
-  calculateInput2Position();      // просчитать позицию второго input
-  
+
+  calculateInputPosition();       // просчитать положение инпутов
+  winResizeInputPosition();       // положение инпутов взависимости от размера окна браузера
+
 
   // шаг 1. ввод числа в первый input
   step1();
-
 }
  
 function step1() {
     // скрываем вторую стрелку, второй и третий input
-    //GLOBAL.arrow2.style.visibility = 'hidden';
-    //GLOBAL.input2.style.visibility = 'hidden';
+    GLOBAL.arrow2.firstChild.style.visibility = 'hidden';
+    GLOBAL.arrow2.lastChild.style.visibility = 'hidden';
+
+    GLOBAL.input2.style.visibility = 'hidden';
     GLOBAL.input3.style.visibility = 'hidden';
     
-    // сброс инпутов с предыдущей игры
+    // сброс инпутов с предыдущей игры. Фокус на первый инпут
     GLOBAL.input1.style.border = '1px solid #aaa';
     GLOBAL.input1.disabled = false;
     GLOBAL.input1.value = '';
@@ -52,25 +55,63 @@ function step1() {
     GLOBAL.input3.style.border = '1px solid #aaa';
     GLOBAL.input3.disabled = false;
     GLOBAL.input3.value = '';
-    //GLOBAL.button.style.display = 'none';
+    GLOBAL.button.style.visibility = 'hidden';
+
+    GLOBAL.arrow1.lastChild.style.visibility = 'hidden';
+    GLOBAL.arrow1.firstChild.classList.toggle("active");
+
+    setTimeout( function () {
+        GLOBAL.arrow1.firstChild.classList.toggle("active");
+        GLOBAL.arrow1.lastChild.style.visibility = 'visible';
+        GLOBAL.arrow1.lastChild.classList.toggle("active");
+        setTimeout( function () {
+            GLOBAL.arrow1.lastChild.classList.toggle("active");
+        }, 600 );
+    }, 600 );
     
     // событие на ввод числа в первый input
     GLOBAL.input1.addEventListener( 'input', function (e) {
-      this.value = e.data;
-      // если ввели правильное число переходим к шагу 2
-      if( this.value == GLOBAL.number[0] ) {
-        step2();
-      } else {  // если значение не верно красим числа в цвета
-        GLOBAL.input1.style.color = 'red';
-        GLOBAL.exampleNum1.style.backgroundColor = 'orange';
-   
-      }
+        var str = '';
+        if( e.data ) this.value = e.data;
+        log(e)
+
+        if( this.value ) {
+            str = this.value;
+            str = str.slice(0,1);
+            log(typeof str);
+        }
+        
+
+        // если ввели правильное число переходим к шагу 2
+        if( this.value == GLOBAL.number[0] ) {
+            step2();
+
+        } else {  // если значение не верно красим числа в цвета
+            GLOBAL.input1.style.color = 'red';
+            GLOBAL.exampleNum1.style.backgroundColor = 'orange';
+    
+        }
     });
-  }
+}
 // шаг 2. ввод числа во второй input. 
 function step2() {
-    // появляются вторая стрелка и второй input
-    GLOBAL.arrow2.style.visibility = 'visible';
+  
+    // появляются вторая стрелка и второй input, на инпут фокус
+    var arrow2 = GLOBAL.arrow2;
+
+    
+    arrow2.firstChild.classList.toggle("active");
+    arrow2.firstChild.style.visibility = 'visible';
+
+    setTimeout( function () {
+        arrow2.firstChild.classList.toggle("active");
+        arrow2.lastChild.style.visibility = 'visible';
+        arrow2.lastChild.classList.toggle("active");
+        setTimeout( function () {
+            arrow2.lastChild.classList.toggle("active");
+        }, 600 );
+    }, 600 );
+
     GLOBAL.input2.style.visibility = 'visible';
     GLOBAL.input2.focus();
     GLOBAL.exampleNum1.style.backgroundColor = 'white';
@@ -82,19 +123,22 @@ function step2() {
    
     // событие на ввод числа во второй input
     GLOBAL.input2.addEventListener( 'input', function (e) {
-      this.value = e.data;
-      // если ввели правильное число переходим к шагу 3
-      if( this.value == GLOBAL.number[1] ) {
-        step3(); 
-      } else { // если значение не верно красим числа в цвета
-        GLOBAL.input2.style.color = 'red';
-        GLOBAL.exampleNum2.style.backgroundColor = 'orange';
-      }
+        this.value = e.data;
+
+        // если ввели правильное число переходим к шагу 3
+        if( this.value == GLOBAL.number[1] ) {
+            step3(); 
+
+        } else { // если значение не верно красим цифры в цвета
+            GLOBAL.input2.style.color = 'red';
+            GLOBAL.exampleNum2.style.backgroundColor = 'orange';
+        }
     });
-  }
+}
 // шаг 3. ввод числа в третий input
 function step3() {
-    // появляется третий input
+    
+    // появляется третий input, переводим фокус на него
     GLOBAL.input3.style.visibility = 'visible';
     GLOBAL.input3.focus();
     GLOBAL.exampleNum2.style.backgroundColor = 'white';
@@ -104,47 +148,43 @@ function step3() {
     GLOBAL.input2.disabled = true;
     GLOBAL.input2.style.color = 'black';
     
-    GLOBAL.input3.addEventListener( 'input', function () {
-      if (this.value.length > 2) {
-        this.value = this.value.slice(0, 2);
-      }
-      if (this.value.length = 1 ) GLOBAL.input3.style.color = 'black';
-      // если ввели правильное число - задача решена
-      if( this.value == GLOBAL.number[0] + GLOBAL.number[1] ) {
-        GLOBAL.input3.style.color = 'black';
-        GLOBAL.input3.style.border = '0';
-        GLOBAL.input3.disabled = true;
-        GLOBAL.input3.style.color = 'black';
-        GLOBAL.button.style.display = 'block';
-  
-      } else { // если значение не верно красим числа в цвета
-        if (this.value.length > 1 ) GLOBAL.input3.style.color = 'red';
-      }
+    // событие на ввод в инпут
+    GLOBAL.input3.addEventListener( 'input', function (e) {
+
+        // запрет на ввод недопустимых символов
+        if( e.data == 'e' || e.data == '-' || e.data == '.' || e.data == '+') this.value = '';
+
+        // если ввели больше двух цифр очищаем инпут
+        if (this.value.length > 2) {
+            this.value = e.data;
+            log(e.data)
+        }
+
+        // если введена одна цифра цвет текста черный
+        if (this.value.length = 1 ) GLOBAL.input3.style.color = 'black';
+
+        // если ввели правильное число - задача решена
+        if( this.value == GLOBAL.number[0] + GLOBAL.number[1] ) {
+            GLOBAL.input3.style.color = 'black';
+            GLOBAL.input3.style.border = '0';
+            GLOBAL.input3.disabled = true;
+            GLOBAL.input3.style.color = 'black';
+            GLOBAL.button.style.visibility = 'visible';
+    
+        } else { // если ответ не правильный красим текст в красный цвет
+            if (this.value.length > 1 ) GLOBAL.input3.style.color = 'red';
+        }
     });
-  }
-// посчитать позицию input1 в зависимости от размера первой стрелки
-function calculateInput1Position(){
-    var arrow1Width = GLOBAL.arrow1.style.width.replace( 'px', '' );
-    var input1Width = GLOBAL.input1.offsetWidth;
-    var input1Left = 27 - input1Width / 2 + arrow1Width / 2 ;
-    var num0 = GLOBAL.number[0];
-    var input1Bottom = -44 + GLOBAL.number[0] * 10;
+}
 
-    GLOBAL.input1.style.left = input1Left + 'px';
-    GLOBAL.input1.style.bottom = input1Bottom + 'px';
-  }
-// посчитать позицию input2 в зависимости от размера второй стрелки
-function calculateInput2Position(){ 
-    var arrow2Width = GLOBAL.arrow2.style.width.replace( 'px', '' );
-    var arrow2Left = GLOBAL.arrow2.style.left.replace( 'px', '' );
-    var input2Width = GLOBAL.input2.offsetWidth;
-    var input2Position = Number( arrow2Left ) + Number(arrow2Width / 2) - input2Width / 2; 
-    var num1 = GLOBAL.number[1];
-    var input2Bottom = -45 + GLOBAL.number[1] * 10;       
+// регулировка толщины стрелок
+function setStroke() {
 
-    GLOBAL.input2.style.left = input2Position + 'px';
-    GLOBAL.input2.style.bottom = input2Bottom + 'px';
-  }
+    var stroke = { 2: 50, 3: 40, 4: 30, 5: 25, 6: 20, 7: 18, 8: 15, 9: 14 }
+
+   GLOBAL.arrow1.style.strokeWidth = stroke[ GLOBAL.number[0] ];
+   GLOBAL.arrow2.style.strokeWidth = stroke[ GLOBAL.number[1] ]; 
+ }
 // взять два случайных числа a и b; a - [6,9], a+b - [11,14]
 function getNumber() {
     var num = [];
@@ -157,45 +197,106 @@ function getNumber() {
     num.push( getRandomInt( 11, 14 ) - num[0] ); 
     return num;
   }
-// просчитать размеры и положение стрелок
+
+function calculateInputPosition(){
+
+    // событие на изменение размера окна браузера
+    window.addEventListener("resize", function () {
+        winResizeInputPosition();   
+    });
+
+}
+// посчитать позиции инпутов в зависимости от размера окна браузера
+function winResizeInputPosition() { 
+
+    winWidth = window.innerWidth;
+
+    var arrow1Width = GLOBAL.arrow1.style.width.replace( 'px', '' );
+    var input1Width = GLOBAL.input1.offsetWidth;
+    var num0 = GLOBAL.number[0];
+
+    var arrow2Width = GLOBAL.arrow2.style.width.replace( 'px', '' );
+    var arrow2Left = GLOBAL.arrow2.style.left.replace( 'px', '' );
+    var input2Width = GLOBAL.input2.offsetWidth;
+    var num1 = GLOBAL.number[1];
+    var input2Position = Number( arrow2Left ) + Number(arrow2Width / 2) - input2Width / 2; 
+    var input2Bottom;
+
+    // @media запрос. Ширина экрана меньше 701px
+    if( winWidth < 701 ) {
+
+        var input1Left = 16 - input1Width / 2 + arrow1Width / 2;
+        var input1Bottom = 15 + GLOBAL.number[0] * 6;
+
+        input2Bottom = 14 + GLOBAL.number[1] * 6;  
+    }
+
+    // @media запрос. Ширина экрана больше 700px но меньше 1201px
+    if( winWidth > 700 && winWidth < 1201) {
+
+        var input1Left = 27 - input1Width / 2 + arrow1Width / 2;
+        var input1Bottom = -44 + GLOBAL.number[0] * 10;
+
+        input2Bottom = -45 + GLOBAL.number[1] * 10; 
+    }
+
+    // @media запрос. Ширина экрана больше 1200px
+    if( winWidth > 1200) {
+
+        var input1Left = 40 - input1Width / 2 + arrow1Width / 2;
+        var input1Bottom = -115 + GLOBAL.number[0] * 15;
+
+        input2Bottom = -117 + GLOBAL.number[1] * 15; 
+    }
+
+    GLOBAL.input1.style.left = input1Left + 'px';
+    GLOBAL.input1.style.bottom = input1Bottom + 'px';
+
+    GLOBAL.input2.style.left = input2Position + 'px';
+    GLOBAL.input2.style.bottom = input2Bottom + 'px';
+}
+
 function calculateArrow() {
 
-        var winWidth, arrow1Width, arrow2Left, arrow2Width;
-
+        // событие на изменение размера окна браузера
         window.addEventListener("resize", function () {
-            winResize();            
+            winResizeArrow();            
         });
-
   }
-
-  function winResize() {
+// посчитать размеры стрелок в зависимости от размера окна браузера
+function winResizeArrow() {
 
     var arrow1Style = GLOBAL.arrow1.style;
     var arrow2Style = GLOBAL.arrow2.style;
 
+    // ширина окна браузера
     winWidth = window.innerWidth;
 
     // @media запрос. Ширина экрана меньше 701px
     if( winWidth < 701 ) {
-        arrow1Width = GLOBAL.number[0] * 14;
+        arrow1Width = GLOBAL.number[0] * 18;
 
+        // размеры и положение первой стрелки
         arrow1Style.width = arrow1Width + 'px';
-        arrow1Style.left = 17 + 'px';
-        arrow1Style.bottom = 57 + 'px';
+        arrow1Style.left = 16 + 'px';
+        arrow1Style.bottom = 63 + 'px';
 
-        arrow2Style.left = 17 + Number(arrow1Width) + 'px';
-        arrow2Style.width = GLOBAL.number[1] * 15 + 'px';
-        arrow2Style.bottom = 57 + 'px';
+        // размеры и положение второй стрелки
+        arrow2Style.left = 15 + Number(arrow1Width) + 'px';
+        arrow2Style.width = GLOBAL.number[1] * 18 + 'px';
+        arrow2Style.bottom = 63 + 'px';
     }
 
     // @media запрос. Ширина экрана больше 700px но меньше 1201px
     if( winWidth > 700 && winWidth < 1201) {
         arrow1Width = GLOBAL.number[0] * 30;
 
+        // размеры и положение первой стрелки
         arrow1Style.width = arrow1Width + 'px';
         arrow1Style.left = 27 + 'px';
         arrow1Style.bottom = 38 + 'px';
 
+        // размеры и положение второй стрелки
         arrow2Style.left = 27 + Number(arrow1Width) + 'px';
         arrow2Style.width = GLOBAL.number[1] * 30 + 'px';
         arrow2Style.bottom = 38 + 'px';
@@ -205,23 +306,18 @@ function calculateArrow() {
     if( winWidth > 1200) {
         arrow1Width = GLOBAL.number[0] * 45;
 
+        // размеры и положение первой стрелки
         arrow1Style.width = arrow1Width + 'px';
         arrow1Style.left = 40 + 'px';
         arrow1Style.bottom = 7 + 'px';
 
+        // размеры и положение второй стрелки
         arrow2Style.left = 38 + Number(arrow1Width) + 'px';
         arrow2Style.width = GLOBAL.number[1] * 45 + 'px';
         arrow2Style.bottom = 7 + 'px';
     }
 }
-// регулировка толщины стрелок
-function setStroke() {
 
-    var stroke = { 2: 50, 3: 40, 4: 30, 5: 25, 6: 20, 7: 18, 8: 15, 9: 14 }
-
-   GLOBAL.arrow1.style.strokeWidth = stroke[ GLOBAL.number[0] ];
-   GLOBAL.arrow2.style.strokeWidth = stroke[ GLOBAL.number[1] ]; 
- }
 
 // взять элемент по id
 function getElemId( str ){
