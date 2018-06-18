@@ -52,7 +52,3 @@ function startGame() {
 function getElemId( str ){
   return document.getElementById( str );
 }
-
-function log( str ) {
-  console.log( str );
-}

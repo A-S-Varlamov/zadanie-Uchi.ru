@@ -3,13 +3,17 @@ var gulp = require( 'gulp' ),
     pug = require( 'gulp-pug' ),
     sass = require( 'gulp-sass' ),
     rigger = require( 'gulp-rigger' ),
+    autoprefixer = require('gulp-autoprefixer'),
     watch = require( 'gulp-watch' );
 
 gulp.task( 'sass', () => {
     const mask = './project/blocks/**/*.sass',
     run = () => gulp.src( mask )
         .pipe( concat( './build/css/style.sass' ) )
-        .pipe( sass() )
+        .pipe(sass({
+            outputStyle: 'compressed'
+        }))
+        .pipe(autoprefixer({browsers: ['last 3 versions']}))
         .pipe( gulp.dest( './' ) );
 
     watch (mask, run );
